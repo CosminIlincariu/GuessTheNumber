@@ -3,20 +3,21 @@
 const guess = document.querySelector(".guess");
 const checkBtn = document.querySelector(".check");
 const message = document.querySelector(".message");
-const bodyEl = document.getElementById("body");
-const highscore = document.querySelector(".highscore");
+const bodyEl = document.querySelector("body");
+const highscoreLabel = document.querySelector(".highscore");
 const number = document.querySelector(".number");
 const againBtn = document.querySelector(".again");
 
 let randomValue = 0;
 let score = 20;
+let highscore = 0;
 
 const luckyNumber = () => {
   randomValue = Math.trunc(Math.random() * 20) + 1;
   return randomValue;
 };
 
-const writeMessage = (display) => {
+const displayMessage = (display) => {
   message.textContent = display;
 };
 
@@ -27,29 +28,29 @@ checkBtn.addEventListener("click", () => {
   const inputNumber = Number(document.querySelector(".guess").value);
 
   if (!inputNumber || inputNumber < 0 || inputNumber > 20) {
-    writeMessage(`⛔ Choose a number between 1 and 20`);
+    displayMessage(`⛔ Choose a number between 1 and 20`);
     return;
   }
 
   if (inputNumber === randomValue) {
-    writeMessage(`🎉 You found it!`);
+    displayMessage(`🎉 You found it!`);
     bodyEl.style.backgroundColor = "#60b347";
     number.textContent = randomValue;
     guess.disabled = true;
     checkBtn.disabled = true;
-    highscore.textContent = score;
-  } else if (inputNumber > randomValue) {
-    writeMessage(`😢 Too high`);
-    score--;
-    document.querySelector(".score").textContent = score;
-  } else if (inputNumber < randomValue) {
-    writeMessage(`😢 Too low`);
+    highscoreLabel.textContent =
+      score > highscore ? (highscore = score) : (highscore = highscore);
+  } else if (inputNumber !== randomValue) {
+    inputNumber > randomValue
+      ? displayMessage(`😢 Too high`)
+      : displayMessage(`😢 Too low`);
+
     score--;
     document.querySelector(".score").textContent = score;
   }
 
   if (score === 0) {
-    writeMessage("You lost!");
+    displayMessage("You lost!");
     checkBtn.disabled = true;
     guess.disabled = true;
     bodyEl.style.backgroundColor = "#8b0000";
@@ -63,7 +64,7 @@ againBtn.addEventListener("click", () => {
   score = 20;
   document.querySelector(".score").textContent = score;
   bodyEl.style.backgroundColor = "#222";
-  writeMessage(`Start guessing...`);
+  displayMessage(`Start guessing...`);
   number.textContent = "?";
   luckyNumber();
   console.log(randomValue);
